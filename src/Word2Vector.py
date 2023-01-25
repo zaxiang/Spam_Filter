@@ -6,6 +6,7 @@ import numpy
 import pickle
 import string
 from nltk.stem.porter import *
+import os
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import defaultdict
@@ -31,16 +32,24 @@ lemmatizer = WordNetLemmatizer()
 
 class w2v_Tokenization:
 
-	def __init__(self, dataset_path, vector_size, window, min_count, workers):
+	def __init__(self, class_list, vector_size, window, min_count, workers):
 
-		f = open(dataset_path + "/seedwords.json")
-
+		f = open("seedwords.json")
 		self.seeds_dic = json.load(f)
 
-		with open(dataset_path + "/df.pkl", 'rb') as f:
-			self.df = pickle.load(f)
 
-		self.X_train = self.df['sentence'].tolist()
+		lis = []
+		
+		for cla in class_list:
+			all_files = os.listdir("annotated/" + cla)
+			for fil in all_files:
+				if fil.endswith(".txt"):
+					file_path = "annotated/" + cla + "/" + fil
+					with open(file_path, 'rb') as f:
+						lis.append(f.read())
+						
+		self.X_train = lis
+
 
 		self.vector_size = vector_size
 		self.window = window
@@ -60,7 +69,7 @@ class w2v_Tokenization:
 
 		X_token = []
 		for doc in token_doc:
-			doc = doc.lower()
+			doc = str(doc.lower())
 			doc = [i for i in doc if not (i in punct)] # non-punct characters
 			doc = ''.join(doc) # convert back to string
 			words = tokenizer(doc) # tokenizes
@@ -122,17 +131,28 @@ class w2v_Tokenization:
 
 class Word2vector:
 
-	def __init__(self, dataset_path, token, word_dic, seeds_dic):
+	def __init__(self, token, word_dic, seeds_dic, class_list):
 
 
-		with open(dataset_path + "/df.pkl", 'rb') as f:
-			self.df = pickle.load(f)
+		lis = []
+		label = []
 
-		self.X_train = self.df['sentence'].tolist()
+		for cla in class_list:
+			all_files = os.listdir("annotated/" + cla)
+			for fil in all_files:
+				if fil.endswith(".txt"):
+					file_path = "annotated/" + cla + "/" + fil
+					with open(file_path, 'rb') as f:
+						lis.append(f.read())
+						label.append(cla)
+
+		self.X_train = lis
 
 		self.token = token
 		self.word_dic = word_dic
 		self.seeds_dic = seeds_dic
+		self.label = label
+
 
 	def get_all_document_vector(self):
     
@@ -198,8 +218,8 @@ class Word2vector:
     
 		print('calculating accuracy')
 		#print('Accuracy: ', accuracy_score(news_df.label.tolist(), news_prediction, normalize=False))
-		micro = f1_score(self.df.label, prediction, average='micro')
-		macro = f1_score(self.df.label, prediction, average='macro')
+		micro = f1_score(self.label, prediction, average='micro')
+		macro = f1_score(self.label, prediction, average='macro')
 		# print('F1-score micro: ', micro)
 		# print('F1-score macro: ', macro)
 
