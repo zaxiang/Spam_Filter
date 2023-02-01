@@ -1,20 +1,20 @@
 {
   "insurance-etc": [
-    "credit", "cash", "home", "Mortgage", "rate", "loan", "refinance"
+    "credit", "cash", "home", "mortgage", "rate", "loan", "refinance"
   ],
   "investment": [
-    "Stock", "market", "price", "invest", "interest", "statement", "secur", "base", "risk", "trade", "uncertainti"
+    "stock", "market", "price", "invest", "interest", "statement", "secur", "base", "risk", "trade"
   ],
   "medical-sales": [
-    "Pill", "buy", "medication", "drug", "prescription", "med", "doctor", "viagra", "pain", "effect"
+    "pill", "buy", "medication", "drug", "prescription", "med", "doctor", "viagra", "pain", "effect"
   ],
   "phising": [
-    "Lottery", "win", "bank", "award", "money", "confidenti", "agent", "winner", "prize", "unclaim"
+    "lottery", "win", "bank", "award", "money", "confidenti", "agent", "winner", "prize"
   ],
   "sexual": [
     "sex", "horny", "date", "free", "sex", "woman", "girl", "sexual", "video", "porn", "adult", "cheat", "hottest", "teen", "cum" 
   ],
   "software-sales": [
-    "Software", "price", "microsoft", "Adobe", "offic", "system", "photoshop", "window", "offer", "download", "server"
+    "software", "price", "microsoft", "adobe", "office", "system", "photoshop", "window", "offer", "download", "server"
   ]
 }
