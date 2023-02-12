@@ -2,4 +2,5 @@ gensim
 pandas
 numpy
 sklearn
-nltk 
+nltk
+fasttext
