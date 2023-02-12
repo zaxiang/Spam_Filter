@@ -3,7 +3,7 @@ import sys
 # Model Imports
 from src.models.TFIDF import *
 from src.models.Word2Vector import *
-from src.models.FastText import *
+# from src.models.FastText import *
 
 
 class TFIDF_runner:
@@ -28,7 +28,7 @@ class TFIDF_runner:
 		# seeds = object_token.modify_seeds()
 		# self.object_tfidf = tfidf('./data/test/testdata/{}/{}'.format(dataset, cla), token, seeds)
 
-		print ("micro and macro f1 scores on all data for " + self.dataset + " are " + str(accuracy)) 
+		print ("micro and macro f1 scores on all annotated data for are " + str(accuracy)) 
 		# print ("tfidf Done")
 
 

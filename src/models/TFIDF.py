@@ -27,7 +27,7 @@ class tfidf_Tokenization:
 
 	def __init__(self, class_list):
 
-		f = open("seedwords.json")
+		f = open("test/seedwords.json")
 		self.seeds_dic = json.load(f)
 
 
