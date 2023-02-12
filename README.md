@@ -9,5 +9,5 @@ The dataset should contain the following files:
     * Other folders follow same pattern for each category
 2) Non-spam (ham) Messages \
   ex) ```data/ham/xyz.txt```
-3) Seedwords JSON file
+3) Seedwords JSON file \
   ex) ```data/seedwords.json```
