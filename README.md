@@ -11,4 +11,4 @@ The dataset should contain the following files:
 2) Non-spam (ham) Messages \
   ex) ```data/raw/ham/xyz.txt```
 3) Seedwords JSON file \
-  ex) ```data/raw/seedwords.json```
+  ex) ```data/out/seedwords.json```
