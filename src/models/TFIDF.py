@@ -35,10 +35,10 @@ class tfidf_Tokenization:
 		lis = []
 		
 		for cla in class_list:
-			all_files = os.listdir("annotated/" + cla)
+			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "annotated/" + cla + "/" + fil
+					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						
@@ -99,10 +99,10 @@ class tfidf:
 		label = []
 
 		for cla in class_list:
-			all_files = os.listdir("annotated/" + cla)
+			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "annotated/" + cla + "/" + fil
+					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						label.append(cla)
