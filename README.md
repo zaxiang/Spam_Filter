@@ -2,7 +2,7 @@
 DSC180 Quarter 2 Capstone Project
 
 # Data
-The data is available on: <ADD LINK> \ \ \
+The data is available on: <ADD LINK> \
 The dataset should contain the following files:
 1) Annotated Spam Messages \
   ex) ```data/Annotated/medical-sales/xyz.txt```
