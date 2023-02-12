@@ -9,8 +9,14 @@ from src.models.FastText import *
 def main(targets):
 	if 'data' in targets:
 		print("Running on full data!")
+		data = ...
 	elif 'test' in targets:
 		print("Running on test data!")
+		data = ...
+	ft = FastText("test")
+
+	
+	
 
 if __name__ == '__main__':
 	targets = sys.argv[1:]
