@@ -4,6 +4,12 @@ Using a list of categories and words that represent these categories, we classif
 
 # Data
 The data is available on: <ADD LINK> \
+Please place files into the following locations; \
+Annotated Spam Messages -> ```data/raw/spam/Annotated/``` \
+Unannotated Spam Messages -> ```data/raw/spam/``` \
+Non-spam (Ham) Messages -> ```data/raw/ham/``` 
+
+
 The dataset should contain the following files:
 1) Annotated Spam Messages \
   ex) ```data/raw/spam/Annotated/medical-sales/xyz.txt```
