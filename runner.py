@@ -1,6 +1,6 @@
 #run tfidf and word2vector file
-from TFIDF import *
-from Word2Vector import *
+from src.models.TFIDF import *
+from src.models.Word2Vector import *
 
 
 class TFIDF_runner:
