@@ -25,7 +25,10 @@ The dataset should contain the following files:
 ``` 
 launch.sh -i gbirch11/dsc180b [-m d]
 ```
-Note: -m is an optional argument to include more RAM on the machine; consider setting $d$ to 16 or 32 for faster processing \
+Note: -m is an optional argument to include more RAM on the machine; HIGLHLY RECOMMEND setting $d$ to 16 or 32 for faster processing \
+``` 
+launch.sh -i gbirch11/dsc180b -m 32
+```
 <br> <br>
 To run this project, execute the following command;
 ```
