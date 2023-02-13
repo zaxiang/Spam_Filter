@@ -22,6 +22,8 @@ from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 import re
 
+from numpy.linalg import norm
+
 
 # import json
 # import pandas as pd
@@ -47,10 +49,11 @@ import re
 # lemmatizer = WordNetLemmatizer()
 
 
-class w2v_Tokenization:
+class Word2vector:
 
-	def __init__(self, class_list, vector_size, window, min_count, workers):
+	def __init__(self, vector_size, window, min_count, workers, targets):
 
+		self.targets = targets
 
 		def cleaning(sentence):
 		    stop_words = set(stopwords.words('english'))
@@ -58,191 +61,109 @@ class w2v_Tokenization:
 		    cleaned = [token for token in tokens if token not in stop_words]
 		    return " ".join(cleaned)
 
+
 		labels = ["insurance-etc","investment", "medical-sales", "phising", "sexual", "software-sales"]
 		text = []
 		classes = []
 
 		for cla in labels:
-		    all_files = os.listdir("data/raw/spam/Annotated/" + cla)
-		    for fil in all_files:
-		        if fil.endswith(".txt"):
-		            file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
-		            with open(file_path, 'r', encoding='ISO-8859-1') as f:
-		                text.append(f.read())
-		                classes.append(cla)
+			path = "data/raw/spam/Annotated/"
+			if self.targets == "data":
+				path = "data/raw/spam/Annotated/"
+			elif self.targets == "test":
+				path = "test/testdata/"
+
+			all_files = os.listdir(path + cla)
+			for fil in all_files:
+				if fil.endswith(".txt"):
+
+					file_path = path + cla + "/" + fil
+					with open(file_path, 'r', encoding='ISO-8859-1') as f:
+						text.append(cleaning(str(f.read())))
+						classes.append(cla)
+
+		            # file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
+					
 		                        
+		                
 		self.data = pd.DataFrame({'sentence':text, 'label':classes})
+
+		def preprocessing(sentence):
+		    tokens = sentence.split(" ")
+		    return [token for token in tokens if token!="" and token != " "]
+		    
+		self.features = self.data["sentence"].apply(preprocessing)
+
 		self.vector_size = vector_size
 		self.window = window
 		self.min_count = min_count
 		self.workers = workers
 
+	def training(self):
 
-	def tokenization(self, token_doc):
+		self.model = Word2Vec(sentences=self.features, vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=self.workers)
+		self.model.save("word2vec.model")
+		self.model = Word2Vec.load("word2vec.model")
+		print("training word2vec model with 800 epochs")
+		self.model.train(self.features, total_examples=len(self.data), epochs=800)
 
-		tfidf_vectorizer = TfidfVectorizer()
-		tokenizer = tfidf_vectorizer.build_tokenizer()
-	    
-		punct = string.punctuation
-		stemmer = PorterStemmer()
+	def get_vectors_per_label(self, filename):
 
-		english_stops = set(stopwords.words('english'))
+	    f = open(filename)
+	    seeds = json.load(f)
+	    vector_per_label = []
+	    for key, value in seeds.items():
+	        lst = []
+	        for w in value:
+	            lst.append(self.model.wv[w])
+	        arr = np.asarray(lst)
+	        total = np.average(arr, axis=0)
+	        vector_per_label.append(total)
+	    return vector_per_label
 
-		X_token = []
-		for doc in token_doc:
-			doc = str(doc.lower())
-			doc = [i for i in doc if not (i in punct)] # non-punct characters
-			doc = ''.join(doc) # convert back to string
-			words = tokenizer(doc) # tokenizes
-			words = [w for w in words if w not in english_stops] #remove stop words
-			words = [lemmatizer.lemmatize(stemmer.stem(w)) for w in words] #lemmatizer and stemmer
-			#Note: remove stemmer for fine dataset
+	def get_vector_per_doc(self, feature):
 
-			X_token.append(words)
-
-		return X_token
-
-
-	def token_X(self):
-
-		print('tokenizing documents...')
-		return self.tokenization(self.X_train)
-
-
-	def modify_seeds(self):
-
-		for clas in self.seeds_dic:
-			cla_lis = self.seeds_dic[clas]
-
-			token_input = [' '.join(cla_lis)]
-			token_seed = self.tokenization(token_input)
-
-			new_lis = token_seed[0]
-			self.seeds_dic[clas] = new_lis
-
-		return self.seeds_dic
-
-
-	def get_token_wordDic(self):
-     
-		#preparing model and word dic 
-
-		token_list = self.token_X() #2D array with word in each document
-		token_documents = token_list.copy()
-
-		#uncomment this for fine dataset
-		
-		# new_seeds = self.modify_seeds()
-		# for lis in list(new_seeds.values()): #add the seed words to the word dic as well
-		# 	token_list.append(lis)
-    
-		model = Word2Vec(sentences=token_list, 
-		vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=self.workers) #use vector size 500
-		
-		model.save("word2vec.model")
-    
-		print("getting the vector for each word...")
-		#save word vector in a dictionary
-		word_dic = dict({})
-		for idx, key in enumerate(model.wv.key_to_index):
-			word_dic[key] = model.wv[key]
-        
-		return token_documents, word_dic
-
-
-class Word2vector:
-
-	def __init__(self, token, word_dic, seeds_dic, class_list):
-
-
-		lis = []
-		label = []
-
-		for cla in class_list:
-			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
-			for fil in all_files:
-				if fil.endswith(".txt"):
-					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
-					with open(file_path, 'rb') as f:
-						lis.append(f.read())
-						label.append(cla)
-
-		self.X_train = lis
-
-		self.token = token
-		self.word_dic = word_dic
-		self.seeds_dic = seeds_dic
-		self.label = label
-
-
-	def get_all_document_vector(self):
-    
-		#starting vectorizing for each document
-		print("getting the vector for each document...")
-
-		DocVec = []
-		for doc in self.token: #for each document
-			doc_vec = numpy.array(100)
-			counter = 0
-			for word in doc: #for each word
-				if word in self.word_dic.keys():
-					counter += 1
-					doc_vec = numpy.add(doc_vec, self.word_dic[word]) #add word vectors
-			doc_vec = numpy.divide(doc_vec, counter) #divide by #of words in document (w/ vector)
-			DocVec.append(doc_vec)
-        
-		return DocVec #return the vector representation of the all the document in a dict
-
-	def get_seed_vector(self, seed_class):
-    
-		doc = self.seeds_dic[seed_class]
-		SeedVec = numpy.array(100)
-		num_seed = 0
-		for word in doc: #for each seed word
-			if word in self.word_dic.keys(): #should have all the seed words in the word dict
-				num_seed += 1
-				SeedVec = numpy.add(SeedVec, self.word_dic[word]) #add seed vectors
-			# else:
-			# 	print("no way.... I thought I added the seed words")
-
-		if num_seed != 0:    #we should have a complete vector for each class
-			SeedVec = numpy.divide(SeedVec, num_seed) #divide by #of seed words
-    
-		return SeedVec
-
-	def get_cosin(self, doc_vector, class_vector):
-		return numpy.dot(doc_vector,class_vector)/(norm(doc_vector)*norm(class_vector))
+	    vector_per_doc = []
+	    for feat in feature:
+	        lst = []
+	        for w in feat:
+	            lst.append(self.model.wv[w])
+	        arr = np.asarray(lst)
+	        total = np.average(arr, axis=0)
+	        vector_per_doc.append(total)
+	    return vector_per_doc
 
 	def get_prediction(self):
 
-		prediction = []
-    
-		All_DocVec = self.get_all_document_vector()#get all document vector
-    
-		print("getting the prediction...")
-    
-		for doc_vector in All_DocVec: #for each document, find the class with greatest similarity
-			max_class = "none"
-			max_similarity = -1000
-			for cla in list(self.seeds_dic.keys()): 
-				seed_vector = self.get_seed_vector(cla)
-				similarity = self.get_cosin(doc_vector, seed_vector)
-				if similarity >= max_similarity:
-					max_similarity = similarity
-					max_class = cla
-			prediction.append(max_class) #append the prediction 
-    
-		return prediction
+		seed_path = "data/out/seedwords.json"
+		f = open(seed_path)
+		self.seeds_dic = json.load(f)
+
+		self.training()
+		vector_per_doc = self.get_vector_per_doc(self.features)
+		vector_per_label = self.get_vectors_per_label(seed_path)
+
+		def predict_word2vec(vector_per_doc, vector_per_label):
+		    predictions = []
+		    labels = list(self.seeds_dic.keys())
+		    for doc in vector_per_doc:
+		        cosine = []
+		        for label in vector_per_label:
+		            cosine.append(np.dot(doc,label)/(norm(doc)*norm(label)))
+		        max_value = max(cosine)
+		        max_index = cosine.index(max_value)
+		        predictions.append(labels[max_index])
+		    return predictions   
+
+		prediction_word2vec = predict_word2vec(vector_per_doc, vector_per_label)
+		self.data["prediction_word2vec"] = prediction_word2vec
 
 	def get_accuracy(self):
-		prediction = self.get_prediction()
-    
-		print('calculating accuracy')
-		#print('Accuracy: ', accuracy_score(news_df.label.tolist(), news_prediction, normalize=False))
-		micro = f1_score(self.label, prediction, average='micro')
-		macro = f1_score(self.label, prediction, average='macro')
-		# print('F1-score micro: ', micro)
-		# print('F1-score macro: ', macro)
+
+		self.get_prediction()
+
+		micro = metrics.f1_score(self.data["label"], self.data["prediction_word2vec"], average="micro")
+		macro = metrics.f1_score(self.data["label"], self.data["prediction_word2vec"], average="macro")
 
 		return micro, macro
-        
+

@@ -25,25 +25,36 @@ lemmatizer = WordNetLemmatizer()
 
 class tfidf_Tokenization:
 
-	def __init__(self, class_list):
+	def __init__(self, class_list, targets):
 
-		f = open("test/seedwords.json")
+		f = open("data/out/seedwords.json")
 		self.seeds_dic = json.load(f)
+
+		if targets == 'test': #in case we have different seedwords for test
+			f = open("test/seedwords.json")
+			self.seeds_dic = json.load(f)
+			
 
 
 		# class_list = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
 		lis = []
 		
 		for cla in class_list:
-			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
+			path = "data/raw/spam/Annotated/"
+			if targets == "test":
+				path = "test/testdata/"
+			
+
+			all_files = os.listdir(path + cla)
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
+
+					file_path = path + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						
-
 		self.X_train = lis
+		self.targets = targets
 
 
 	def tokenization(self, token_doc):
@@ -72,7 +83,7 @@ class tfidf_Tokenization:
 
 	def token_X(self):
 
-		print('tokenizing documents...')
+		# print('tokenizing documents...')
 		return self.tokenization(self.X_train)
 
 
@@ -92,22 +103,32 @@ class tfidf_Tokenization:
 
 class tfidf:
 
-	def __init__(self, token, seeds_dic, class_list):
+	def __init__(self, token, seeds_dic, class_list, targets):
 
 		#class_list = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
 		lis = []
 		label = []
 
+		path = "data/raw/spam/Annotated/"
+		if targets == 'test':
+			path = "test/testdata/"
+
 		for cla in class_list:
-			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
+			all_files = os.listdir(path + cla)
+
+			# all_files = os.listdir("data/raw/spam/Annotated/" + cla)
+
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
+					file_path = path + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						label.append(cla)
+					# file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
+					
 
 		self.X_train = lis
+		self.targets = targets
 
 		self.token = token
 		self.seeds_dic = seeds_dic
@@ -116,7 +137,7 @@ class tfidf:
 
 	def get_idf(self):
 
-		print('get_idf')
+		# print('get_idf')
 
 		dic_idf = defaultdict(int)
 		for doc in self.token:
@@ -172,7 +193,7 @@ class tfidf:
 	def get_prediction(self):
 
 		prediction = []
-		print("getting predictions")
+		# print("getting predictions")
 		for doc in self.token:
 			prediction.append(self.get_class(doc))
 
@@ -183,8 +204,7 @@ class tfidf:
 		self.get_idf() #get idf attribute only once
 
 		prediction = self.get_prediction()
-    
-		print('calculating accuracy')
+		# print('calculating accuracy')
 		#print('Accuracy: ', accuracy_score(news_df.label.tolist(), news_prediction, normalize=False))
 		micro = f1_score(self.label, prediction, average='micro')
 		macro = f1_score(self.label, prediction, average='macro')
