@@ -8,55 +8,61 @@ from src.models.FastText import *
 
 class TFIDF_runner:
 
-	def __init__(self, targets):
+	def __init__(self, target):
 
-		print("Baseline tf-idf model:")
+		print("Baseline TF-IDF model:")
 		class_lis = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
 
-		object_token = tfidf_Tokenization(class_lis, targets)
+		object_token = tfidf_Tokenization(class_lis, target)
 		token = object_token.token_X() #data_path in the model file
 		seeds = object_token.modify_seeds()
 
-		object_tfidf = tfidf(token, seeds, class_lis, targets)
+		object_tfidf = tfidf(token, seeds, class_lis, target)
 
 		#get the tfidf model accuracy
-		accuracy = object_tfidf.get_accuracy()
-		self.targets = targets
-		print(str(accuracy))
+		micro, macro = object_tfidf.get_accuracy()
+		print('Micro F1 = ' + str(micro))
+		print('Macro F1 = ' + str(macro))
+		print('\n\n')
 		
-		# self.dataset = dataset
-		# object_token = tfidf_Tokenization('./data/test/testdata/{}/{}'.format(dataset, cla))
-		# token = object_token.token_X()
-		# seeds = object_token.modify_seeds()
-		# self.object_tfidf = tfidf('./data/test/testdata/{}/{}'.format(dataset, cla), token, seeds)
-
-		# print ("tfidf model: micro and macro f1 scores are " + str(accuracy)) 
-		# print ("tfidf Done")
 
 
 class W2V_Runner:
 
-	def __init__(self, targets):
+	def __init__(self, target):
 
-		print("Baseline Word2Vector model:")
-		class_lis = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
+		print("Baseline Word2Vec model:")
 		
 		#class_lis, vector_size, window, min_count, workers
-		object_w2v = Word2vector(110, 5, 1, 8, targets)
+		object_w2v = Word2vector(110, 5, 1, 8, target)
 
 		#get the w2v model accuracy
-		accuracy = object_w2v.get_accuracy()
-		print(str(accuracy))
-		# self.targets = targets
+		micro, macro = object_w2v.get_accuracy()
+		print('Micro F1 = ' + str(micro))
+		print('Macro F1 = ' + str(macro))
+		print('\n\n')
 
-		# print ("word2vec model: micro and macro f1 scores are " + str(accuracy))
 
+class FastText_Runner:
 
+	def __init__(self, target):
+		print("Baseline FastText word embeddings model:")
+		pred, label = FastText(target)
+		micro, macro = get_accuracy(pred, label)
+		print('Micro F1 = ' + str(micro))
+		print('Macro F1 = ' + str(macro))
+		print('\n\n')
 
 def main(targets):
-
-	TFIDF_runner(targets)
-	W2V_Runner(targets)
+	if 'data' in targets:
+		print("Running on full data!")
+		target = 'data'
+	elif 'test' in targets:
+		print("Running on test data!")
+		target = 'test'
+	TFIDF_runner(target)
+	W2V_Runner(target)
+	FastText_Runner(target)
 
 
 if __name__ == '__main__':
@@ -64,11 +70,3 @@ if __name__ == '__main__':
     main(targets)
 
 
-# def main(targets):
-# 	if 'data' in targets:
-# 		print("Running on full data!")
-# 		data = ...
-# 	elif 'test' in targets:
-# 		print("Running on test data!")
-# 		data = ...
-# 	ft = FastText("test")

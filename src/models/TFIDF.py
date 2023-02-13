@@ -25,25 +25,24 @@ lemmatizer = WordNetLemmatizer()
 
 class tfidf_Tokenization:
 
-	def __init__(self, class_list, targets):
+	def __init__(self, class_list, target):
 
-		self.targets = targets
+		self.target = target
 
 		f = open("data/out/seedwords.json")
 		self.seeds_dic = json.load(f)
 
-		if self.targets == 'test': #in case we have different seedwords for test
+		if self.target == 'test': #in case we have different seedwords for test
 			f = open("test/seedwords.json")
 			self.seeds_dic = json.load(f)
 			
 
 
-		# class_list = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
 		lis = []
 		
 		for cla in class_list:
 			path = "data/raw/spam/Annotated/"
-			if self.targets == "test":
+			if self.target == 'test':
 				path = "test/testdata/"
 			
 
@@ -56,7 +55,6 @@ class tfidf_Tokenization:
 						lis.append(f.read())
 						
 		self.X_train = lis
-		self.targets = targets
 
 
 	def tokenization(self, token_doc):
@@ -85,7 +83,6 @@ class tfidf_Tokenization:
 
 	def token_X(self):
 
-		# print('tokenizing documents...')
 		return self.tokenization(self.X_train)
 
 
@@ -105,21 +102,19 @@ class tfidf_Tokenization:
 
 class tfidf:
 
-	def __init__(self, token, seeds_dic, class_list, targets):
+	def __init__(self, token, seeds_dic, class_list, target):
 
-		self.targets = targets
-		#class_list = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
+		self.target = target
 		lis = []
 		label = []
 
 		path = "data/raw/spam/Annotated/"
-		if self.targets == 'test':
+		if self.target == 'test':
 			path = "test/testdata/"
 
 		for cla in class_list:
 			all_files = os.listdir(path + cla)
 
-			# all_files = os.listdir("data/raw/spam/Annotated/" + cla)
 
 			for fil in all_files:
 				if fil.endswith(".txt"):
@@ -127,11 +122,10 @@ class tfidf:
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						label.append(cla)
-					# file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
 					
 
 		self.X_train = lis
-		self.targets = targets
+
 
 		self.token = token
 		self.seeds_dic = seeds_dic
@@ -166,7 +160,6 @@ class tfidf:
 				counter += 1
 				dic_tfidf[s] = dic_tfidf[s] * numpy.log((len(self.X_train) / self.idf_dic[s]))
 			else:
-				print("no way... the seed {} is not in any tokenized document".format(s))
 				dic_tfidf[s] = 0
 			sum_tfidf += dic_tfidf[s] 
         
@@ -179,16 +172,6 @@ class tfidf:
 		for c in list(self.seeds_dic.keys()):
 			tfidf = self.get_tfidf_stat(doc, self.seeds_dic[c])
 			dic_scores[c] = tfidf
-
-		# print(dic_scores) #checking 
-
-		# if len(set(list(dic_scores.values()))) == 1: 
-		# 	if int(list(set(list(dic_scores.values())))[0]) == 0: #having tie: all 0 case
-		# 		return "no_label"
-		# 		print("we have no class for this document")
-		# 	else: #having tie: 
-		# 		return list(dic_scores.keys())[0]
-		# 		print("the tfidf are all the same for this document, weird...")
 
 		return max(dic_scores, key=dic_scores.get)
 
@@ -207,12 +190,8 @@ class tfidf:
 		self.get_idf() #get idf attribute only once
 
 		prediction = self.get_prediction()
-		# print('calculating accuracy')
-		#print('Accuracy: ', accuracy_score(news_df.label.tolist(), news_prediction, normalize=False))
 		micro = f1_score(self.label, prediction, average='micro')
 		macro = f1_score(self.label, prediction, average='macro')
-		# print('F1-score micro: ', micro)
-		# print('F1-score macro: ', macro)
 
 		return micro, macro
     
