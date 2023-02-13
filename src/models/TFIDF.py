@@ -1,5 +1,3 @@
-#TFIDF
-
 import json
 import pandas as pd
 import numpy

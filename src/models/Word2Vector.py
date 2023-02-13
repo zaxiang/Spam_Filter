@@ -69,7 +69,7 @@ class Word2vector:
 	def training(self):
 
 		self.model = Word2Vec(sentences=self.features, vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=24)#self.workers)
-		self.model.save("word2vec.model")
+		self.model.save("src/models/word2vec.model")
 		self.model = Word2Vec.load("src/models/word2vec.model")
 		self.model.train(self.features, total_examples=len(self.data), epochs=800)
 
