@@ -19,3 +19,24 @@ The dataset should contain the following files:
   ex) ```data/raw/ham/xyz.txt```
 3) Seedwords JSON file \
   ex) ```data/out/seedwords.json```
+
+## Running the Project
+**DSMLP Command**
+``` 
+launch.sh -i gbirch11/dsc180b [-m d]
+```
+Note: -m is an optional argument to include more RAM on the machine; consider setting $d$ to 16 or 32 for faster processing \
+<br> <br>
+To run this project, execute the following command;
+```
+python run.py [test | data]
+```
+Note: If running ```python run.py test``` \
+Very simple set of test data will be used to produce results.
+
+If running ```python run.py data```: \
+Whole dataset will be used to produce results.
+
+Example commands include: \
+``` python run.py test ``` \
+``` python run.py data ```
