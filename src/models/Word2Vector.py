@@ -51,23 +51,27 @@ class w2v_Tokenization:
 
 	def __init__(self, class_list, vector_size, window, min_count, workers):
 
-		f = open("test/seedwords.json")
-		self.seeds_dic = json.load(f)
 
+		def cleaning(sentence):
+		    stop_words = set(stopwords.words('english'))
+		    tokens = re.sub(r'[^\w\s]', '', sentence.lower()).replace("\n", " ").split(" ")
+		    cleaned = [token for token in tokens if token not in stop_words]
+		    return " ".join(cleaned)
 
-		lis = []
-		
-		for cla in class_list:
-			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
-			for fil in all_files:
-				if fil.endswith(".txt"):
-					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
-					with open(file_path, 'rb') as f:
-						lis.append(f.read())
-						
-		self.X_train = lis
+		labels = ["insurance-etc","investment", "medical-sales", "phising", "sexual", "software-sales"]
+		text = []
+		classes = []
 
-
+		for cla in labels:
+		    all_files = os.listdir("data/raw/spam/Annotated/" + cla)
+		    for fil in all_files:
+		        if fil.endswith(".txt"):
+		            file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
+		            with open(file_path, 'r', encoding='ISO-8859-1') as f:
+		                text.append(f.read())
+		                classes.append(cla)
+		                        
+		self.data = pd.DataFrame({'sentence':text, 'label':classes})
 		self.vector_size = vector_size
 		self.window = window
 		self.min_count = min_count
