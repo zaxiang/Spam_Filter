@@ -22,6 +22,7 @@ class TFIDF_runner:
 		#get the tfidf model accuracy
 		accuracy = object_tfidf.get_accuracy()
 		self.targets = targets
+		print(str(accuracy))
 		
 		# self.dataset = dataset
 		# object_token = tfidf_Tokenization('./data/test/testdata/{}/{}'.format(dataset, cla))
@@ -29,7 +30,7 @@ class TFIDF_runner:
 		# seeds = object_token.modify_seeds()
 		# self.object_tfidf = tfidf('./data/test/testdata/{}/{}'.format(dataset, cla), token, seeds)
 
-		print ("tfidf model: micro and macro f1 scores are " + str(accuracy)) 
+		# print ("tfidf model: micro and macro f1 scores are " + str(accuracy)) 
 		# print ("tfidf Done")
 
 
@@ -45,10 +46,11 @@ class W2V_Runner:
 
 		#get the w2v model accuracy
 		accuracy = object_w2v.get_accuracy()
-		self.targets = targets
+		print(str(accuracy))
+		# self.targets = targets
 
-		print ("word2vec model: micro and macro f1 scores are " + str(accuracy))
-		
+		# print ("word2vec model: micro and macro f1 scores are " + str(accuracy))
+
 
 
 def main(targets):

@@ -27,10 +27,12 @@ class tfidf_Tokenization:
 
 	def __init__(self, class_list, targets):
 
+		self.targets = targets
+
 		f = open("data/out/seedwords.json")
 		self.seeds_dic = json.load(f)
 
-		if targets == 'test': #in case we have different seedwords for test
+		if self.targets == 'test': #in case we have different seedwords for test
 			f = open("test/seedwords.json")
 			self.seeds_dic = json.load(f)
 			
@@ -41,7 +43,7 @@ class tfidf_Tokenization:
 		
 		for cla in class_list:
 			path = "data/raw/spam/Annotated/"
-			if targets == "test":
+			if self.targets == "test":
 				path = "test/testdata/"
 			
 
@@ -105,12 +107,13 @@ class tfidf:
 
 	def __init__(self, token, seeds_dic, class_list, targets):
 
+		self.targets = targets
 		#class_list = ['insurance-etc', 'investment', 'medical-sales', 'phising', 'sexual', 'software-sales']
 		lis = []
 		label = []
 
 		path = "data/raw/spam/Annotated/"
-		if targets == 'test':
+		if self.targets == 'test':
 			path = "test/testdata/"
 
 		for cla in class_list:

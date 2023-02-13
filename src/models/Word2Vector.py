@@ -68,9 +68,7 @@ class Word2vector:
 
 		for cla in labels:
 			path = "data/raw/spam/Annotated/"
-			if self.targets == "data":
-				path = "data/raw/spam/Annotated/"
-			elif self.targets == "test":
+			if self.targets == "test":
 				path = "test/testdata/"
 
 			all_files = os.listdir(path + cla)
