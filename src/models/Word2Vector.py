@@ -1,50 +1,67 @@
 #Word2Vec
 
-import json
-import pandas as pd
-import numpy
-import pickle
-import string
-from nltk.stem.porter import *
-import os
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from collections import defaultdict
-from sklearn.metrics import f1_score
-from sklearn.metrics import accuracy_score
-from numpy.linalg import norm
-
-# !python -m pip install -U gensim
-
+import gensim
 from gensim.test.utils import common_texts
 from gensim.models import Word2Vec
 
+from sklearn import metrics
 
-import nltk.corpus
+import json
+
+import pickle
+import pandas as pd
+import numpy as np
+import os
+import nltk
 nltk.download('stopwords')
-from nltk.corpus import stopwords
-
-from nltk.stem import WordNetLemmatizer 
 nltk.download('wordnet')
-nltk.download('omw-1.4')
+nltk.download('punkt')
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+  
 lemmatizer = WordNetLemmatizer()
+import re
+
+
+# import json
+# import pandas as pd
+# import numpy
+# import pickle
+# import string
+# from nltk.stem.porter import *
+# import os
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# from collections import defaultdict
+# from sklearn.metrics import f1_score
+# from sklearn.metrics import accuracy_score
+# from numpy.linalg import norm
+# # !python -m pip install -U gensim
+# from gensim.test.utils import common_texts
+# from gensim.models import Word2Vec
+# import nltk.corpus
+# nltk.download('stopwords')
+# from nltk.corpus import stopwords
+# from nltk.stem import WordNetLemmatizer 
+# nltk.download('wordnet')
+# nltk.download('omw-1.4')
+# lemmatizer = WordNetLemmatizer()
 
 
 class w2v_Tokenization:
 
 	def __init__(self, class_list, vector_size, window, min_count, workers):
 
-		f = open("seedwords.json")
+		f = open("test/seedwords.json")
 		self.seeds_dic = json.load(f)
 
 
 		lis = []
 		
 		for cla in class_list:
-			all_files = os.listdir("annotated/" + cla)
+			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "annotated/" + cla + "/" + fil
+					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						
@@ -138,10 +155,10 @@ class Word2vector:
 		label = []
 
 		for cla in class_list:
-			all_files = os.listdir("annotated/" + cla)
+			all_files = os.listdir("data/raw/spam/Annotated/" + cla)
 			for fil in all_files:
 				if fil.endswith(".txt"):
-					file_path = "annotated/" + cla + "/" + fil
+					file_path = "data/raw/spam/Annotated/" + cla + "/" + fil
 					with open(file_path, 'rb') as f:
 						lis.append(f.read())
 						label.append(cla)
