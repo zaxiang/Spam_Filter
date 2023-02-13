@@ -35,7 +35,8 @@ To run this project, execute the following command;
 python run.py [test | data]
 ```
 Note: If running ```python run.py test``` \
-Very simple set of test data will be used to produce results.
+Very simple set of test data will be used to produce results. \\
+Result trend not consistent with running on full dataset.
 
 If running ```python run.py data```: \
 Whole dataset will be used to produce results.
