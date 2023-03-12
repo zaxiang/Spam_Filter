@@ -22,7 +22,7 @@ USER jovyan
 
 RUN git clone https://github.com/facebookresearch/fastText.git && cd fastText && pip install .
 
-RUN pip install --no-cache-dir scipy matplotlib pandas numpy pickle4 gensim nltk
+RUN pip install --no-cache-dir scipy matplotlib pandas numpy pickle4 gensim nltk keras flair
 
 # Override command to disable running jupyter notebook at launch
 CMD ["/bin/bash"]
