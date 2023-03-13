@@ -206,12 +206,15 @@ def main(dataset_path, temp_dir):
         for file in os.listdir():
     
             if file.endswith(".txt"):
-                file_path = os.path.join(path,file)
+                file_path = os.path.join(os.getcwd(),file)
                 text.append(str(read_text_file(file_path)))
                 classes.append(label)
-
+        os.chdir("../..")
     df =  pd.DataFrame({'sentence':text, 'label':classes})
 
+    os.chdir("../..")
+    print(os.getcwd())
+    pkl_dump_dir = os.path.join(os.getcwd(), "out/")
     with open(pkl_dump_dir + "seedwords.json") as fp:
         label_seedwords_dict = json.load(fp)
     dump_bert_vecs(df, bert_dump_dir)
