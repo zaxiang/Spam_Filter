@@ -4,6 +4,7 @@ import sys
 from src.models.TFIDF import *
 from src.models.Word2Vector import *
 from src.models.FastText import *
+from src.models.ConWea import *
 
 
 class TFIDF_runner:
@@ -52,6 +53,11 @@ class FastText_Runner:
 		print('Micro F1 = ' + str(micro))
 		print('Macro F1 = ' + str(macro))
 		print('\n\n')
+
+class ConWea_Runner:
+	def __init__(self, targets):
+		print("ConWea Model:")
+		
 
 def main(targets):
 	if 'data' in targets:
