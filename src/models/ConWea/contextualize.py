@@ -19,6 +19,8 @@ import pandas as pd
 
 def main(dataset_path, temp_dir):
     def dump_bert_vecs(df, dump_dir):
+        print(os.getcwd())
+        print(dump_dir)
         print("Getting BERT vectors...")
         embedding = TransformerWordEmbeddings('bert-base-uncased')
         word_counter = defaultdict(int)
@@ -213,10 +215,10 @@ def main(dataset_path, temp_dir):
     df =  pd.DataFrame({'sentence':text, 'label':classes})
 
     os.chdir("../..")
-    print(os.getcwd())
     pkl_dump_dir = os.path.join(os.getcwd(), "out/")
     with open(pkl_dump_dir + "seedwords.json") as fp:
         label_seedwords_dict = json.load(fp)
+    print(bert_dump_dir)
     dump_bert_vecs(df, bert_dump_dir)
     tau = compute_tau(label_seedwords_dict, bert_dump_dir)
     print("Cluster Similarity Threshold: ", tau)
