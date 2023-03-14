@@ -16,12 +16,13 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 from util import *
 import pandas as pd
+import warnings
+from sklearn.exceptions import ConvergenceWarning
 
 
 def main(dataset_path, temp_dir):
+    warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
     def dump_bert_vecs(df, dump_dir):
-        #print(os.getcwd())
-        #print(dump_dir)
         print("Getting BERT vectors...")
         embedding = TransformerWordEmbeddings('bert-base-uncased')
         word_counter = defaultdict(int)
@@ -122,7 +123,7 @@ def main(dataset_path, temp_dir):
                     pickle.dump(cc, output_file)
             except Exception as e:
                 except_counter += 1
-                print("Exception Counter while clustering: ", except_counter, word_index, e)
+                #print("Exception Counter while clustering: ", except_counter, word_index, e)
 
     def contextualize(df, cluster_dump_dir):
         def get_cluster(tok_vec, cc):
@@ -180,7 +181,7 @@ def main(dataset_path, temp_dir):
                                     word_cluster[word] = cc
                                 except Exception as e:
                                     except_counter += 1
-                                    print("Exception Counter while getting clusters: ", except_counter, index, e)
+                                    #print("Exception Counter while getting clusters: ", except_counter, index, e)
                                     continue
 
                     if len(cc) > 1:
@@ -200,8 +201,6 @@ def main(dataset_path, temp_dir):
     from pathlib import Path
     for label in labels:
         path = dataset_path + label
-        print("now is " + str(os.getcwd()))
-        print("going to be " + str(path))
         os.chdir(path)
   
         def read_text_file(file_path):
@@ -214,21 +213,28 @@ def main(dataset_path, temp_dir):
                 file_path = os.path.join(os.getcwd(),file)
                 text.append(str(read_text_file(file_path)))
                 classes.append(label)
-        #os.chdir("../..")
+        if "test" not in dataset_path:        
+            os.chdir("../..")
     df =  pd.DataFrame({'sentence':text, 'label':classes})
 
-    #os.chdir("../..")
-    pkl_dump_dir = os.path.join(os.getcwd(), "out/")
+    os.chdir("../..")
+    if "test" not in dataset_path:  
+        pkl_dump_dir = os.path.join(os.getcwd(), "out/")
+    else:
+        pkl_dump_dir = os.path.join(os.getcwd(), "")
     with open(pkl_dump_dir + "seedwords.json") as fp:
         label_seedwords_dict = json.load(fp)
-    #print(bert_dump_dir)
     dump_bert_vecs(df, bert_dump_dir)
     tau = compute_tau(label_seedwords_dict, bert_dump_dir)
     print("Cluster Similarity Threshold: ", tau)
     cluster_words(tau, bert_dump_dir, cluster_dump_dir)
     df_contextualized, word_cluster_map = contextualize(df, cluster_dump_dir)
-    pickle.dump(df_contextualized, open(pkl_dump_dir + "df_contextualized.pkl", "wb"))
-    pickle.dump(word_cluster_map, open(pkl_dump_dir + "word_cluster_map.pkl", "wb"))
+    if 'test' in dataset_path:
+        pickle.dump(df_contextualized, open(pkl_dump_dir + "testdata/df_contextualized.pkl", "wb"))
+        pickle.dump(word_cluster_map, open(pkl_dump_dir + "testdata/word_cluster_map.pkl", "wb"))
+    else:
+        pickle.dump(df_contextualized, open(pkl_dump_dir + "df_contextualized.pkl", "wb"))
+        pickle.dump(word_cluster_map, open(pkl_dump_dir + "word_cluster_map.pkl", "wb"))
 
 
 if __name__ == "__main__":
