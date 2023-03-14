@@ -1,3 +1,4 @@
+
 import argparse
 import json
 import numpy as np
@@ -19,8 +20,8 @@ import pandas as pd
 
 def main(dataset_path, temp_dir):
     def dump_bert_vecs(df, dump_dir):
-        print(os.getcwd())
-        print(dump_dir)
+        #print(os.getcwd())
+        #print(dump_dir)
         print("Getting BERT vectors...")
         embedding = TransformerWordEmbeddings('bert-base-uncased')
         word_counter = defaultdict(int)
@@ -199,6 +200,8 @@ def main(dataset_path, temp_dir):
     from pathlib import Path
     for label in labels:
         path = dataset_path + label
+        print("now is " + str(os.getcwd()))
+        print("going to be " + str(path))
         os.chdir(path)
   
         def read_text_file(file_path):
@@ -211,14 +214,14 @@ def main(dataset_path, temp_dir):
                 file_path = os.path.join(os.getcwd(),file)
                 text.append(str(read_text_file(file_path)))
                 classes.append(label)
-        os.chdir("../..")
+        #os.chdir("../..")
     df =  pd.DataFrame({'sentence':text, 'label':classes})
 
-    os.chdir("../..")
+    #os.chdir("../..")
     pkl_dump_dir = os.path.join(os.getcwd(), "out/")
     with open(pkl_dump_dir + "seedwords.json") as fp:
         label_seedwords_dict = json.load(fp)
-    print(bert_dump_dir)
+    #print(bert_dump_dir)
     dump_bert_vecs(df, bert_dump_dir)
     tau = compute_tau(label_seedwords_dict, bert_dump_dir)
     print("Cluster Similarity Threshold: ", tau)
