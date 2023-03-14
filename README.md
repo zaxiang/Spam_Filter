@@ -49,7 +49,7 @@ Example commands include: \
 Note: The above commands only run on the TF-IDF, Word2Vec, and FastText models. To run our best model, ConWea, see the section below.
 
 ## Running the ConWea Model
-Since ConWea is a huge model using BERT, we have separated this model into the following separate commands; \
+Since ConWea is a huge model using BERT, we have separated this model into the following separate commands;
 1) Navigate to the ConWea model directory using \
 ``` cd src/models/ConWea ``` <br> <br>
 2) To contextualize the corpus and seed words run \
@@ -57,4 +57,7 @@ a) For testing: ``` python contextualize.py --dataset_path "../../../test/testda
 b) For full data: ``` python contextualize.py --dataset_path "../../../data/raw/spam/Annotated/" --temp_dir "/temp/" --gpu_id 0 ```  <br> <br>
 3) To train model + observe results run \
 a) For testing: ``` python train.py --dataset_path "../../../test/testdata" --gpu_id 0 ``` \
-b) For full data: ``` python train.py --dataset_path "../../../data/raw/spam/Annotated/" --gpu_id 0 ``` 
+b) For full data: ``` python train.py --dataset_path "../../../data/raw/spam/Annotated/" --gpu_id 0 ```  <br> <br>
+
+Note: Be warned that running ConWea on the full dataset will ~ 3 hours to run. Running ConWea on test data runs in ~ 20 minutes. <br>
+Note: ConWea trains using multiple layers and tons of epochs, since our test data is small it is safe to interrupt the terminal (CTRL+C) after first iteration has occured. The layers are kept for consistency for full datasets.
