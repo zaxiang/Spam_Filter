@@ -196,7 +196,7 @@ def main(dataset_path, print_flag=True):
                 X = vect.fit_transform(docs)
                 X_arr = X.toarray()
                 rel_freq = np.sum(X_arr, axis=0) / len(docs)
-                names = vect.get_feature_names_out()
+                names = vect.get_feature_names()
                 for i, name in enumerate(names):
                     try:
                         if docfreq_local[name] < doc_freq_thresh:
