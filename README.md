@@ -1,8 +1,9 @@
 # Weakly Supervised Spam-Label Classification
-DSC180 Quarter 2 Capstone Project \
+DSC180 Quarter 2 Capstone Project 
+
 Using a list of categories and words that represent these categories, we classify harmful spam messages into categories such as insurance scams, medical sales, software sales, and more. Doing so, we hope to alleviate the burden on non technical people in todays world as spammers continue to get by detection systems - we want to find and highlight a pattern throughout them all. Leveraging models ranging from simple methods like TFIDF to complex large language models such as ConWea with BERT, we examine the differences between these models and if it is worth using such big, computation costly models.
 
-You can see more details about our project on our [Website](https://gbirch11.github.io/SpamLabelClassifier/)
+You can see more details about our project on our [website](https://gbirch11.github.io/SpamLabelClassifier/).
 
 # Data
 The data is available on [Google Drive](https://drive.google.com/drive/folders/1uTRzRPkom6nUtRB2D4pOi8uOpSpqst7m?usp=share_link)\
