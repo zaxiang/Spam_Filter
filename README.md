@@ -59,7 +59,7 @@ Since ConWea is a huge model using BERT, we have separated this model into the f
 a) For testing: ``` python contextualize.py --dataset_path "../../../test/testdata/" --temp_dir "temp/" --gpu_id 0 ``` \
 b) For full data: ``` python contextualize.py --dataset_path "../../../data/raw/spam/Annotated/" --temp_dir "temp/" --gpu_id 0 ```  <br> <br>
 3) To train model + observe results run \
-a) For testing: ``` python train.py --dataset_path "../../../test/testdata" --gpu_id 0 ``` \
+a) For testing: ``` python train.py --dataset_path "../../../test/testdata/" --gpu_id 0 ``` \
 b) For full data: ``` python train.py --dataset_path "../../../data/raw/spam/Annotated/" --gpu_id 0 ```  <br> <br>
 
 Note: Be warned that running ConWea on the full dataset will ~ 3 hours to run. Running ConWea on test data runs in ~ 20 minutes. <br>
