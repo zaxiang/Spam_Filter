@@ -1,6 +1,9 @@
 # Weakly Supervised Spam-Label Classification
-DSC180 Quarter 2 Capstone Project \
+DSC180 Quarter 2 Capstone Project 
+
 Using a list of categories and words that represent these categories, we classify harmful spam messages into categories such as insurance scams, medical sales, software sales, and more. Doing so, we hope to alleviate the burden on non technical people in todays world as spammers continue to get by detection systems - we want to find and highlight a pattern throughout them all. Leveraging models ranging from simple methods like TFIDF to complex large language models such as ConWea with BERT, we examine the differences between these models and if it is worth using such big, computation costly models.
+
+You can see more details about our project on our [website](https://gbirch11.github.io/SpamLabelClassifier/).
 
 # Data
 The data is available on [Google Drive](https://drive.google.com/drive/folders/1uTRzRPkom6nUtRB2D4pOi8uOpSpqst7m?usp=share_link)\
@@ -36,7 +39,7 @@ To run this project, execute the following command;
 python run.py [test | data]
 ```
 Note: If running ```python run.py test``` \
-Very simple set of test data will be used to produce results. \\
+Very simple set of test data will be used to produce results. \
 Result trend not consistent with running on full dataset.
 
 If running ```python run.py data```: \
@@ -53,10 +56,10 @@ Since ConWea is a huge model using BERT, we have separated this model into the f
 1) Navigate to the ConWea model directory using \
 ``` cd src/models/ConWea ``` <br> <br>
 2) To contextualize the corpus and seed words run \
-a) For testing: ``` python contextualize.py --dataset_path "../../../test/testdata" --temp_dir "/temp/" --gpu_id 0 ``` \
-b) For full data: ``` python contextualize.py --dataset_path "../../../data/raw/spam/Annotated/" --temp_dir "/temp/" --gpu_id 0 ```  <br> <br>
+a) For testing: ``` python contextualize.py --dataset_path "../../../test/testdata/" --temp_dir "temp/" --gpu_id 0 ``` \
+b) For full data: ``` python contextualize.py --dataset_path "../../../data/raw/spam/Annotated/" --temp_dir "temp/" --gpu_id 0 ```  <br> <br>
 3) To train model + observe results run \
-a) For testing: ``` python train.py --dataset_path "../../../test/testdata" --gpu_id 0 ``` \
+a) For testing: ``` python train.py --dataset_path "../../../test/testdata/" --gpu_id 0 ``` \
 b) For full data: ``` python train.py --dataset_path "../../../data/raw/spam/Annotated/" --gpu_id 0 ```  <br> <br>
 
 Note: Be warned that running ConWea on the full dataset will ~ 3 hours to run. Running ConWea on test data runs in ~ 20 minutes. <br>
